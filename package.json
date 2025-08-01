@@ -1,0 +1,40 @@
+{
+  "name": "is-agent-monorepo",
+  "private": "true",
+  "type": "module",
+  "workspaces": [
+    "./example",
+    "./lib"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "npm run build -w lib && npm run build -w example",
+    "test": "npm run test -w lib",
+    "test:watch": "npm run test:watch -w lib",
+    "test:coverage": "npm run test:coverage -w lib"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@jest/globals": "^30.0.5",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.0",
+    "typescript-eslint": "^8.38.0"
+  }
+}
