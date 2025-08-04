@@ -21,4 +21,4 @@ See [CONTRIBUTING](./CONTRIBUTING.md) for how to contribute to this SDK.
 
 ## Support
 
-For issues and contributions, please visit our [GitHub repository](https://github.com/stytch/is-agent) and for help, please email [isagent@stytch.com](mailto:isagent@stytch.com).
+For issues and contributions, please visit our [GitHub repository](https://github.com/stytchauth/is-agent) and for help, please email [isagent@stytch.com](mailto:isagent@stytch.com).
