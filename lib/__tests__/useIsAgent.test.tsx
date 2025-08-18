@@ -92,8 +92,64 @@ describe('useIsAgent hook and components', () => {
         render(<TestComponent />);
       });
 
-      expect(mockIsAgent).toHaveBeenCalledWith(testToken);
+      expect(mockIsAgent).toHaveBeenCalledWith(testToken, { signal: expect.any(AbortSignal) });
       expect(mockIsAgent).toHaveBeenCalledTimes(1);
+    });
+
+    it('should pass abort signal to isAgent function', async () => {
+      mockIsAgent.mockResolvedValue({
+        is_agent_client_hint: true,
+        identity: 'test-bot',
+      });
+
+      await act(async () => {
+        render(<TestComponent />);
+      });
+
+      expect(mockIsAgent).toHaveBeenCalledWith(testToken, { signal: expect.any(AbortSignal) });
+
+      const callArgs = mockIsAgent.mock.calls[0];
+      expect(callArgs[1]).toHaveProperty('signal');
+      expect(callArgs[1]?.signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it('should handle component unmount and abort ongoing request', async () => {
+      mockIsAgent.mockResolvedValue({
+        is_agent_client_hint: true,
+        identity: 'test-bot',
+      });
+
+      const { unmount } = render(<TestComponent />);
+
+      // Verify the request was initiated
+      expect(mockIsAgent).toHaveBeenCalledWith(testToken, { signal: expect.any(AbortSignal) });
+
+      // Get the abort signal that was passed
+      const abortSignal = mockIsAgent.mock.calls[0]?.[1]?.signal;
+      expect(abortSignal?.aborted).toBe(false);
+
+      // Unmount the component (this should trigger cleanup and abort the request)
+      unmount();
+
+      // After unmounting, the abort signal should be aborted
+      expect(abortSignal?.aborted).toBe(true);
+    });
+
+    it('should handle abort error gracefully', async () => {
+      const abortError = new DOMException('The operation was aborted.', 'AbortError');
+      mockIsAgent.mockRejectedValue(abortError);
+
+      render(<TestComponent />);
+
+      // Wait for the error to be handled
+      await waitFor(() => {
+        expect(screen.getByTestId('loading')).toHaveTextContent('false');
+      });
+
+      // The error should be set, but the component should handle it gracefully
+      expect(screen.getByTestId('error')).toHaveTextContent('The operation was aborted.');
+      expect(screen.getByTestId('bot-identity')).toHaveTextContent('null');
+      expect(screen.getByTestId('likely-bot')).toHaveTextContent('null');
     });
   });
 

@@ -113,4 +113,31 @@ describe('isAgent', () => {
       identity: 'concurrent bot',
     });
   });
+
+  it('should accept options parameter with abort signal', async () => {
+    const token = 'test-token';
+    const abortController = new AbortController();
+    const mockResponse = {
+      is_agent_client_hint: false,
+      identity: null,
+    };
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    } as Response);
+
+    const result = await isAgent(token, { signal: abortController.signal });
+
+    expect(mockFetch).toHaveBeenCalledWith('https://api.isagent.dev/is_agent', {
+      method: 'POST',
+      body: JSON.stringify({ public_token: token }),
+      signal: abortController.signal,
+    });
+
+    expect(result).toEqual({
+      is_agent_client_hint: false,
+      identity: null,
+    });
+  });
 });

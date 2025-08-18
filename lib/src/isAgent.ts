@@ -2,6 +2,11 @@ type IsAgentResult = {
   is_agent_client_hint: boolean;
   identity: string | null;
 };
+
+type IsAgentOptions = Pick<RequestInit, 'signal'>;
+
+type IsAgentArgs = [publicToken: string, options?: IsAgentOptions];
+
 // Package-scoped promise result used for deduplication
 let isAgentResultProm: Promise<IsAgentResult> | null = null;
 
@@ -9,12 +14,16 @@ let isAgentResultSync: IsAgentResult | null = null;
 /**
  * Checks if the current client is likely a bot using the provided Stytch public token.
  * @param publicToken - The Stytch public token
+ * @param options - Optional configuration object that accepts an AbortSignal to cancel the API request
  * @throws IsAgentError - when request cannot be completed successfully
  * @returns An object with is_agent_client_hint and identity
  */
-export async function isAgent(publicToken: string): Promise<IsAgentResult> {
+export async function isAgent(...args: IsAgentArgs): Promise<IsAgentResult> {
+  const [publicToken, options] = args;
   if (!isAgentResultProm) {
-    isAgentResultProm = doIsAgentAPICall(publicToken).then((res) => (isAgentResultSync = res));
+    isAgentResultProm = doIsAgentAPICall(publicToken, options).then(
+      (res) => (isAgentResultSync = res)
+    );
   }
   return isAgentResultProm;
 }
@@ -29,10 +38,14 @@ export function __resetIsAgentCache() {
   isAgentResultSync = null;
 }
 
-async function doIsAgentAPICall(publicToken: string): Promise<IsAgentResult> {
+async function doIsAgentAPICall(
+  publicToken: string,
+  options?: IsAgentOptions
+): Promise<IsAgentResult> {
   const res = await fetch('https://api.isagent.dev/is_agent', {
     method: 'POST',
     body: JSON.stringify({ public_token: publicToken }),
+    ...options,
   });
   if (res.ok) {
     return res.json();

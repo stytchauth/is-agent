@@ -190,8 +190,11 @@ export function createAgentContext(publicToken: string): {
 
     useEffect(() => {
       if (!state.loading) return;
-      isAgent(publicToken)
+
+      const abortController = new AbortController();
+      isAgent(publicToken, { signal: abortController.signal })
         .then(({ is_agent_client_hint, identity }) => {
+          if (abortController.signal.aborted) return;
           setState({
             loading: false,
             error: null,
@@ -199,14 +202,19 @@ export function createAgentContext(publicToken: string): {
             isAgentClientHint: is_agent_client_hint,
           });
         })
-        .catch((error) =>
+        .catch((error) => {
+          if (abortController.signal.aborted) return;
           setState({
             loading: false,
             error,
             identity: null,
             isAgentClientHint: null,
-          })
-        );
+          });
+        });
+
+      return () => {
+        abortController.abort();
+      };
     }, [state.loading]);
 
     return state;
