@@ -11,6 +11,7 @@ type IsAgentArgs = [publicToken: string, options?: IsAgentOptions];
 let isAgentResultProm: Promise<IsAgentResult> | null = null;
 
 let isAgentResultSync: IsAgentResult | null = null;
+
 /**
  * Checks if the current client is likely a bot using the provided Stytch public token.
  * @param publicToken - The Stytch public token
@@ -21,9 +22,13 @@ let isAgentResultSync: IsAgentResult | null = null;
 export async function isAgent(...args: IsAgentArgs): Promise<IsAgentResult> {
   const [publicToken, options] = args;
   if (!isAgentResultProm) {
-    isAgentResultProm = doIsAgentAPICall(publicToken, options).then(
-      (res) => (isAgentResultSync = res)
-    );
+    isAgentResultProm = doIsAgentAPICall(publicToken, options);
+    try {
+      isAgentResultSync = await isAgentResultProm;
+    } catch (e) {
+      isAgentResultProm = null;
+      throw e;
+    }
   }
   return isAgentResultProm;
 }
