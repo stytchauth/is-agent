@@ -140,4 +140,39 @@ describe('isAgent', () => {
       identity: null,
     });
   });
+
+  it('does not cache the response if a call fails', async () => {
+    const token = 'test-token';
+    const mockResponse = {
+      is_agent_client_hint: true,
+      identity: 'concurrent bot',
+    };
+
+    let errored = false;
+    mockFetch.mockImplementation(async () => {
+      if (!errored) {
+        errored = true;
+        throw new Error('aborted');
+      }
+      return {
+        ok: true,
+        json: async () => mockResponse,
+      } as Response;
+    });
+
+    // Make multiple sequential calls. First one should fail and not be cached.
+    const result1 = await isAgent(token).catch((err) => err);
+    const result2 = await isAgent(token);
+    const result3 = await isAgent(token);
+
+    // Should make two API calls since first result is not cached
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+
+    expect(result1).toEqual(new Error('aborted'));
+    expect(result2).toEqual(result3);
+    expect(result2).toEqual({
+      is_agent_client_hint: true,
+      identity: 'concurrent bot',
+    });
+  });
 });
