@@ -190,11 +190,11 @@ a.secondary {
 }
 
 .isAgentInfoWidget .isAgentValue {
-  color: #0070f3;
+  color: var(--accent);
 }
 
 .isAgentInfoWidget .isHumanValue {
-  color: #333;
+  color: var(--foreground);
 }
 
 .isAgentInfoWidget .statusDesc {
@@ -208,6 +208,7 @@ a.secondary {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--foreground);
 }
 
 .spinnerIcon {
@@ -216,7 +217,7 @@ a.secondary {
 
 .codeSnippet {
   font-family: var(--font-geist-mono, monospace);
-  background: #f5f5f5;
+  background: var(--muted);
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 16px;
@@ -229,13 +230,13 @@ a.secondary {
 
 .tabs {
   display: flex;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--border);
 }
 
 .tabButton {
   flex: 1;
   padding: 12px 0;
-  background: #f5f5f5;
+  background: var(--muted);
   border: none;
   border-bottom: 2px solid transparent;
   font-weight: 500;
@@ -248,17 +249,17 @@ a.secondary {
 }
 
 .tabButton.active {
-  background: #fff;
-  border-bottom: 2px solid #0070f3;
+  background: var(--card);
+  border-bottom: 2px solid var(--accent);
   font-weight: 700;
 }
 
 .tabContent {
   padding: 24px;
-  background: #fff;
+  background: var(--card);
   border-radius: 0 0 8px 8px;
   height: 180px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-top: none;
   overflow: auto;
   width: 100%;
@@ -266,7 +267,7 @@ a.secondary {
 
 .markdownBlock {
   font-family: monospace;
-  background: #f5f5f5;
+  background: var(--muted);
   padding: 16px;
   border-radius: 8px;
 }
@@ -277,8 +278,21 @@ a.secondary {
 
 .codeSnippet {
   font-family: var(--font-geist-mono, monospace);
-  background: #f5f5f5;
+  background: var(--muted);
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 16px;
+}
+
+/* Utilities */
+.accentText {
+  color: var(--accent);
+}
+
+.blockquote {
+  border-left: 4px solid var(--accent);
+  margin: 16px 0;
+  padding: 8px 16px;
+  background: var(--muted);
+  border-radius: 4px;
 }
