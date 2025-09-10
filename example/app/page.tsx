@@ -100,21 +100,14 @@ function HumanContent() {
     <div>
       <h2>Welcome, human! 👋</h2>
       <p>
-        Humans expect <b>rich formatting</b> with <span style={{ color: '#0070f3' }}>colors</span>,{' '}
+        Humans expect <b>rich formatting</b> with <span className={styles.accentText}>colors</span>,{' '}
         <i>emphasis</i>, or{' '}
         <a href="https://stytch.com" target="_blank" rel="noopener noreferrer">
           links
         </a>
         .
       </p>
-      <blockquote
-        style={{
-          borderLeft: '4px solid #0070f3',
-          margin: '16px 0',
-          padding: '8px 16px',
-          background: '#f5f5f5',
-        }}
-      >
+      <blockquote className={styles.blockquote}>
         &quot;This is a complex formatted blockquote for humans.&quot;
       </blockquote>
     </div>
